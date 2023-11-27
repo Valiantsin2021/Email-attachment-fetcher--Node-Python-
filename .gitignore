@@ -1,0 +1,12 @@
+.mypy_cache/
+.vscode/
+node_modules
+py_attachments
+.env
+attachments/
+colorful.hbs
+complete.html
+mailer_etherium.js
+mailer_gmail.js
+responsive.html
+simple.hbs
