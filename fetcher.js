@@ -2,7 +2,7 @@ const Imap = require('imap')
 const fs = require('fs')
 const simpleParser = require('mailparser').simpleParser
 require('dotenv').config()
-
+const inspect = require('util').inspect
 class MailAttachmentFetcher {
   constructor(emailConfig, localFolderPath) {
     this.emailConfig = emailConfig
@@ -107,7 +107,8 @@ const emailConfig = {
   password: process.env.PASS,
   host: process.env.HOST,
   port: 993,
-  tls: true
+  tls: true,
+  tlsOptions: { rejectUnauthorized: false }
 }
 
 const localFolderPath = './attachments'
