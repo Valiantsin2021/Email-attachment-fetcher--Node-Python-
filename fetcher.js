@@ -50,7 +50,7 @@ class MailAttachmentFetcher {
     }
 
     console.log(`Fetched ${results.length} emails.`)
-
+    const existingAttachments = fs.readdirSync(this.localFolderPath)
     results.forEach((seqno) => {
       const fetch = this.imap.fetch([seqno], { bodies: '' })
 
@@ -63,17 +63,22 @@ class MailAttachmentFetcher {
             }
             if (parsed.attachments && parsed.attachments.length > 0) {
               console.log(`\nSaving attachments from Email ${seqno}`)
-              parsed.attachments.forEach((attachment, index) => {
-                if (this.isSupportedAttachment(attachment)) {
-                  const filename = attachment.filename || `attachment_${seqno}_${index + 1}.${attachment.contentType.split('/')[1]}`
+              for (let index = 0; index < parsed.attachments.length; index++) {
+                if (this.isSupportedAttachment(parsed.attachments[index])) {
+                  const filename =
+                    parsed.attachments[index].filename || `attachment_${seqno}_${index + 1}.${parsed.attachments[index].contentType.split('/')[1]}`
+                  if (existingAttachments.includes(filename)) {
+                    console.log(`Attachment ${filename} already exists. Skipping...`)
+                    continue
+                  }
                   const filePath = `${this.localFolderPath}/${filename}`
-                  fs.writeFileSync(filePath, attachment.content)
+                  fs.writeFileSync(filePath, parsed.attachments[index].content)
 
                   console.log(`Saved supported attachment: ${filePath}`)
                 } else {
-                  console.log(`Skipped unsupported attachment: ${attachment.filename}`)
+                  console.log(`Skipped unsupported attachment: ${parsed.attachments[index].filename}`)
                 }
-              })
+              }
             } else {
               console.log(`No attachments found in Email ${seqno}.`)
             }
