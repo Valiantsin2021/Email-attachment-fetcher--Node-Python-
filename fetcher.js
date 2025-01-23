@@ -62,15 +62,16 @@ class MailAttachmentFetcher {
               throw err
             }
             if (parsed.attachments && parsed.attachments.length > 0) {
-              console.log(`\nSaving attachments from Email ${seqno}`)
               for (let index = 0; index < parsed.attachments.length; index++) {
                 if (this.isSupportedAttachment(parsed.attachments[index])) {
+                  // console.log(inspect(parsed.attachments[index]))
                   const filename =
                     parsed.attachments[index].filename || `attachment_${seqno}_${index + 1}.${parsed.attachments[index].contentType.split('/')[1]}`
                   if (existingAttachments.includes(filename)) {
                     console.log(`Attachment ${filename} already exists. Skipping...`)
                     continue
                   }
+                  console.log(`\nSaving attachments from Email ${seqno}`)
                   const filePath = `${this.localFolderPath}/${filename}`
                   fs.writeFileSync(filePath, parsed.attachments[index].content)
 
